@@ -81,3 +81,87 @@ So the simple rules to follow are that:
 2. Import objects from moudules outside of the package via a direct import
    or import-as statement.
 
+
+*********************
+``__init__.py`` Hooks
+*********************
+To make this all work, the ``__init__.py`` for the package needs a predefined
+space for ``amalgamate.py`` to write hooks into.  In its simplest form, this
+is defined by the lines::
+
+    # amalgamate exclude
+    # amalgamate end
+
+The ``amalgamate.py`` script will fill in between these two line and will over
+write them as needed.  The initial exclude line accepts a space-separated list
+of module names in the package to exclude from amalgamation::
+
+    # amalgamate exclude foo bar baz
+    # amalgamate end
+
+You may also provide as many exclude lines as you want, though there should
+only be one end line::
+
+    # amalgamate exclude foo
+    # amalgamate exclude bar
+    # amalgamate exclude baz
+    # amalgamate end
+
+Also note that all modules whose names start with a double undersocre, like
+``__init__.py`` and ``__main__.py`` are automatically excluded.
+
+
+**********************
+Command Line Interface
+**********************
+The command line interface is a list of package names to amalgamate::
+
+    $ amalgamate.py pkg pkg.sub0 pkg.sub1
+
+You may also provide the ``--debug=NAME`` name to declare the environment
+varaible name for import debuging::
+
+    $ amalgamate.py --debug=PKG_DEBUG pkg pkg.sub0 pkg.sub1
+
+By default, this environment variable is simply called ``DEBUG``. If this
+environment variable exists and is set to a non-empty string, then all
+amalgamated imports are skipped and the modules in the package are imported
+normally.  For example, suppose you have a script that imports your package
+and you would like to see the module names, you could run the script with::
+
+    $ env PKG_DEBUG=1 python script.py
+
+to supress the amalgameted imports.
+
+**************
+Setup Hooks
+**************
+We recommend running ``amalgamatge.py`` everytime that setup.py is executed.
+This keeps ``__amalgam__.py`` and ``__init__.py`` in sync with the rest of
+the package.  Feel free to use the following hook function in your project::
+
+    def amalagamate_source():
+        """Amalgamtes source files."""
+        try:
+            import amalgamate
+        except ImportError:
+            print('Could not import amalgamate, skipping.', file=sys.stderr)
+            return
+        amalgamate.main(['amalgamate', '--debug=PKG_DEBUG', 'pkg'])
+
+Additionally, feel free to copy the ``amalgamate.py`` script to your project.
+It is only a single file!
+
+**************
+Dark Wizardry
+**************
+This is implemented via a syntax tree transformation so developers could write
+mostly normal Python without having to worry about import speed. That accounts for
+the wizardry.
+
+The darkness comes from a project called
+`JsonCpp <https://github.com/open-source-parsers/jsoncpp>`_. JsonCpp has an
+`amalgamate script <https://github.com/open-source-parsers/jsoncpp/blob/master/amalgamate.py>`_,
+that glues the whole project into a single header and single source file.
+This is an amazing idea.  The kicker is that JsonCpp's amalgamate is written in
+Python :)
