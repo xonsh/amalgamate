@@ -16,7 +16,7 @@ setup_kwargs = {
     "author": 'The xonsh developers',
     "author_email": 'xonsh@googlegroups.com',
     "url": 'https://github.com/xonsh/amalgamate',
-    "download_url": "https://github.com/scopatz/xo/zipball/" + VERSION,
+    "download_url": "https://github.com/xonsh/amalgamate/zipball/" + VERSION,
     "classifiers": [
         "License :: OSI Approved",
         "Intended Audience :: Developers",
@@ -24,15 +24,15 @@ setup_kwargs = {
         "Topic :: Utilities",
         ],
     "zip_safe": False,
+    "scripts": ['amalgamate.py'],
     "data_files": [("", ['LICENSE', 'README.rst']),],
     }
 
 
 if __name__ == '__main__':
     setup(
-        name='exofrills',
+        name='amalgamate',
         py_modules=['amalgamate'],
-        entry_points={'console_scripts': ['xo = xo:main',],},
         long_description=open('README.rst').read(),
         **setup_kwargs
         )
