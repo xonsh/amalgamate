@@ -1,7 +1,7 @@
 ==========
 amalgamate
 ==========
-A package-based, source code amalgamater for collapseing Python packages into
+A package-based, source code amalgamater for collapsing Python packages into
 a single module.
 
 The amalgamate utility enables the possibility of speeding up startup time for
@@ -40,13 +40,13 @@ The way the code amalgamater works is that other modules
 that are in the same package (and amalgamated) should be imported from-imports,
 without an ``as``-clause.  For example, suppose that ``z`` is a module in the
 package ``pkg``, that depends on ``x`` and ``y`` in the same package.  ``z``
-should exlucively use imports like the following::
+should exclusively use imports like the following::
 
     from pkg.x import a, c, d
     from pkg.y import e, f, g
 
 These from-imports simulate all of the ``x``, ``y``, and ``z`` modules having
-the same ``gloabls()``.
+the same ``globals()``.
 This is because the amalgamater puts all such modules in the same globals(),
 which is effectively what the from-imports do. For example, ``xonsh.ast`` and
 ``xonsh.execer`` are both in the same package (``xonsh``). Thus they should use
@@ -55,7 +55,7 @@ the above from from-import syntax.
 Alternatively, for modules outside of the current package (or modules that are
 not amalgamated) the import statement should be either ``import pkg.x`` or
 ``import pkg.x as name``. This is because these are the only cases where the
-amalgamater is able to automatically insert lazy imports in way that is guarantted
+amalgamater is able to automatically insert lazy imports in way that is guaranteed
 to be safe. Say we are back in ``z`` and depend on ``dep``, ``collections.abc``,
 and modules in a subpackage, ``pkg.sub``.  The following are all acceptable::
 
@@ -68,9 +68,9 @@ The important thing here is to simply be consistent for such imports across all
 modules in the package ``pkg``.
 
 **WARNING:** You should not use the form ``from pkg.i import j`` for modules
-outside of the amalgamted package. This is due to the ambiguity that
+outside of the amalgamated package. This is due to the ambiguity that
 ``from pkg.x import name`` may import a variable that cannot be lazily constructed
-OR may import a module. The amalgamater is foreced to leave such import stametements
+OR may import a module. The amalgamater is forced to leave such import statements
 as they were written, which means that they cannot be automatically lazy or
 eliminated.  They are thus forced to be imported at when ``__amalgam__.py`` is
 imported/
@@ -78,7 +78,7 @@ imported/
 So the simple rules to follow are that:
 
 1. Import objects from modules in the same package directly in using from-import,
-2. Import objects from moudules outside of the package via a direct import
+2. Import objects from modules outside of the package via a direct import
    or import-as statement.
 
 
@@ -107,7 +107,7 @@ only be one end line::
     # amalgamate exclude baz
     # amalgamate end
 
-Also note that all modules whose names start with a double undersocre, like
+Also note that all modules whose names start with a double underscore, like
 ``__init__.py`` and ``__main__.py`` are automatically excluded.
 
 
@@ -119,7 +119,7 @@ The command line interface is a list of package names to amalgamate::
     $ amalgamate.py pkg pkg.sub0 pkg.sub1
 
 You may also provide the ``--debug=NAME`` name to declare the environment
-varaible name for import debuging::
+variable name for import debugging::
 
     $ amalgamate.py --debug=PKG_DEBUG pkg pkg.sub0 pkg.sub1
 
@@ -131,17 +131,17 @@ and you would like to see the module names, you could run the script with::
 
     $ env PKG_DEBUG=1 python script.py
 
-to supress the amalgameted imports.
+to suppress the amalgamated imports.
 
 **************
 Setup Hooks
 **************
-We recommend running ``amalgamatge.py`` everytime that setup.py is executed.
+We recommend running ``amalgamate.py`` every time that setup.py is executed.
 This keeps ``__amalgam__.py`` and ``__init__.py`` in sync with the rest of
 the package.  Feel free to use the following hook function in your project::
 
-    def amalagamate_source():
-        """Amalgamtes source files."""
+    def amalgamate_source():
+        """Amalgamates source files."""
         try:
             import amalgamate
         except ImportError:
