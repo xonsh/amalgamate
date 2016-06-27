@@ -13,6 +13,7 @@ VERSION = "0.1.0"
 setup_kwargs = {
     "version": VERSION,
     "description": 'Collapses Python packages into a single module.',
+    "license": 'BSD 3-clause',
     "author": 'The xonsh developers',
     "author_email": 'xonsh@googlegroups.com',
     "url": 'https://github.com/xonsh/amalgamate',
