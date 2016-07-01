@@ -68,7 +68,6 @@ def make_node(name, pkg, allowed):
         elif isinstance(a, ImportFrom):
             if a.module == pkg:
                 pkgdeps.update(n.name for n in a.names if n.name in allowed)
-                
             elif not a.module or a.module.startswith(pkgdot):
                 if a.module is None:
                     p, dot, m = pkg, ".", a.names[0].name
