@@ -245,7 +245,7 @@ def rewrite_imports(name, pkg, order, imps):
             replacements.append((start, stop, s))
         elif isinstance(a, ImportFrom):
             if not a.module:
-                a.module = pkgdot
+                a.module = pkg
                 p, dot, m = pkg, ".", ""
             else:
                 p, dot, m = a.module.rpartition('.')
