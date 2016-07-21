@@ -199,7 +199,7 @@ def resolve_package_module(module, pkg, level, default=None):
         p, _, m = module.rpartition('.')
     elif level == 1:
         p = pkg
-        m = default
+        m = module or default
     else:
         p = m = None
     return p, m
@@ -415,7 +415,7 @@ def rewrite_imports(name, pkg, order, imps):
                         raise RuntimeError(msg)
             elif p == pkg and m in order:
                 replacements.append((start, stop,
-                                     '# amalgamated ' + m + '\n'))
+                                     '# amalgamated ' + p + '.' + m + '\n'))
             elif a.module == '__future__':
                 replacements.append((start, stop,
                                      '# amalgamated __future__ directive\n'))

@@ -38,11 +38,19 @@ def test_module_from_package(mod, pkg, level, exp):
 
 
 @pytest.mark.parametrize('mod,pkg,level,default,exp', [
+    # all of the following in package x
+    # from x.a import ---
     ('x.a', 'x', 0, None, ('x', 'a')),
+    # from x.y.a import ---
     ('x.y.a', 'x.y', 0, None, ('x.y', 'a')),
+    # from . import ---
     (None, 'x', 1, 'a', ('x', 'a')),
     (None, 'x.y', 1, 'a', ('x.y', 'a')),
+    # from .. import ---
     (None, 'y', 2, 'a', (None, None)),
+    # from .y import ---
+    ('y', 'x', 1, 'a', ('x', 'y')),
+    ('y', 'x', 1, None, ('x', 'y')),
     ])
 def test_resolve_package_module(mod, pkg, level, default, exp):
     assert exp == amalgamate.resolve_package_module(mod, pkg, level,
