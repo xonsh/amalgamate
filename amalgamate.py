@@ -168,6 +168,16 @@ class GlobalNames(object):
             self.add(child, istopnode=True)
 
 
+def module_is_package(module, pkg, level):
+    """Returns whether or not the module name refers to the package."""
+    if level == 0:
+        return module == pkg
+    elif level == 1:
+        return module is None
+    else:
+        return False
+
+
 def make_node(name, pkg, allowed, glbnames):
     """Makes a node by parsing a file and traversing its AST."""
     raw = SOURCES[pkg, name]
@@ -188,7 +198,7 @@ def make_node(name, pkg, allowed, glbnames):
                 else:
                     extdeps.add(n.name)
         elif isinstance(a, ImportFrom):
-            if a.module == pkg:
+            if module_is_package(a.module, pkg, a.level):
                 pkgdeps.update(n.name for n in a.names if n.name in allowed)
             elif not a.module or a.module.startswith(pkgdot):
                 if a.module is None:
