@@ -49,3 +49,10 @@ def test_resolve_package_module(mod, pkg, level, default, exp):
                                                     default=default)
 
 
+def test_from_dot_import_a():
+    assert 'from . import a' in LINES
+
+
+def test_not_from_dotx_import_b():
+    assert 'from .x import b' not in LINES
+
