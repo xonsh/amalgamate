@@ -188,6 +188,20 @@ def module_from_package(module, pkg, level):
        return False
 
 
+def resolve_package_module(module, pkg, level, default=None):
+    """Returns a 2-tuple of package and module name, even for relative
+    imports
+    """
+    if level == 0:
+        p, _, m = module.rpartition('.')
+    elif level == 1:
+        p = pkg
+        m = default
+    else:
+        p = m = None
+    return p, m
+
+
 def make_node(name, pkg, allowed, glbnames):
     """Makes a node by parsing a file and traversing its AST."""
     raw = SOURCES[pkg, name]
@@ -211,10 +225,12 @@ def make_node(name, pkg, allowed, glbnames):
             if module_is_package(a.module, pkg, a.level):
                 pkgdeps.update(n.name for n in a.names if n.name in allowed)
             elif module_from_package(a.module, pkg, a.level):
-                if a.module is None:
-                    p, dot, m = pkg, ".", a.names[0].name
-                else:
-                    p, dot, m = a.module.rpartition('.')
+                p, m = resolve_package_module(a.module, pkg, a.level,
+                                              default=a.names[0].name)
+                #if a.module is None:
+                #    p, dot, m = pkg, ".", a.names[0].name
+                #else:
+                #    p, dot, m = a.module.rpartition('.')
                 if p == pkg and m in allowed:
                     pkgdeps.add(m)
                 else:

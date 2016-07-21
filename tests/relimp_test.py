@@ -36,3 +36,16 @@ def test_module_is_package(mod, pkg, level, exp):
 def test_module_from_package(mod, pkg, level, exp):
     assert exp is amalgamate.module_from_package(mod, pkg, level)
 
+
+@pytest.mark.parametrize('mod,pkg,level,default,exp', [
+    ('x.a', 'x', 0, None, ('x', 'a')),
+    ('x.y.a', 'x.y', 0, None, ('x.y', 'a')),
+    (None, 'x', 1, 'a', ('x', 'a')),
+    (None, 'x.y', 1, 'a', ('x.y', 'a')),
+    (None, 'y', 2, 'a', (None, None)),
+    ])
+def test_resolve_package_module(mod, pkg, level, default, exp):
+    assert exp == amalgamate.resolve_package_module(mod, pkg, level,
+                                                    default=default)
+
+
