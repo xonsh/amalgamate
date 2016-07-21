@@ -178,6 +178,16 @@ def module_is_package(module, pkg, level):
         return False
 
 
+def module_from_package(module, pkg, level):
+    """Returns whether or not a module is from the package."""
+    if level == 0:
+        return module.startswith(pkg + '.')
+    elif level == 1:
+        return True
+    else:
+       return False
+
+
 def make_node(name, pkg, allowed, glbnames):
     """Makes a node by parsing a file and traversing its AST."""
     raw = SOURCES[pkg, name]
@@ -200,7 +210,7 @@ def make_node(name, pkg, allowed, glbnames):
         elif isinstance(a, ImportFrom):
             if module_is_package(a.module, pkg, a.level):
                 pkgdeps.update(n.name for n in a.names if n.name in allowed)
-            elif not a.module or a.module.startswith(pkgdot):
+            elif module_from_package(a.module, pkg, a.level):
                 if a.module is None:
                     p, dot, m = pkg, ".", a.names[0].name
                 else:
