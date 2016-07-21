@@ -227,10 +227,6 @@ def make_node(name, pkg, allowed, glbnames):
             elif module_from_package(a.module, pkg, a.level):
                 p, m = resolve_package_module(a.module, pkg, a.level,
                                               default=a.names[0].name)
-                #if a.module is None:
-                #    p, dot, m = pkg, ".", a.names[0].name
-                #else:
-                #    p, dot, m = a.module.rpartition('.')
                 if p == pkg and m in allowed:
                     pkgdeps.add(m)
                 else:
@@ -406,21 +402,17 @@ def rewrite_imports(name, pkg, order, imps):
                 s = format_lazy_import(keep)
             replacements.append((start, stop, s))
         elif isinstance(a, ImportFrom):
-            if not a.module:
-                a.module = pkg
-                p, dot, m = pkg, ".", ""
-            else:
-                p, dot, m = a.module.rpartition('.')
-            if a.module == pkg:
+            p, m = resolve_package_module(a.module, pkg, a.level, default='')
+            if module_is_package(a.module, pkg, a.level):
                 for n in a.names:
                     if n.name in order:
                         msg = ('Cannot amalgamate import of '
                                'amalgamated module:\n\n  from {0} import {1}\n'
                                '\nin {0}/{2}.py').format(pkg, n.name, name)
                         raise RuntimeError(msg)
-            elif a.module.startswith(pkgdot) and p == pkg and m in order:
+            elif p == pkg and m in order:
                 replacements.append((start, stop,
-                                     '# amalgamated ' + a.module + '\n'))
+                                     '# amalgamated ' + m + '\n'))
             elif a.module == '__future__':
                 replacements.append((start, stop,
                                      '# amalgamated __future__ directive\n'))
