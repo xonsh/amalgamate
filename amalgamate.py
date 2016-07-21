@@ -100,7 +100,10 @@ class GlobalNames(object):
             self.topnode = nodename
         meth = getattr(self, '_add_' + nodename, None)
         if meth is not None:
-            meth(node)
+            try:
+                meth(node)
+            except:
+                import pdb; pdb.set_trace()
 
     def _add_name(self, node):
         self.entry(node.id, node.lineno)
@@ -129,7 +132,7 @@ class GlobalNames(object):
             self.entry(name, lineno)
 
     def _add_importfrom(self, node):
-        pkg, _, _ = node.module.rpartition('.')
+        pkg, _ = resolve_package_module(node.module, self.pkg, node.level)
         if pkg == self.pkg:
             return
         lineno = node.lineno

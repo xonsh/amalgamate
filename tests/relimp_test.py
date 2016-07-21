@@ -7,7 +7,7 @@ import amalgamate
 
 LINES = None
 
-def _setup_module():
+def setup_module():
     global LINES
     amalgamate.main(['amal', 'relimp'])
     with open(os.path.join('relimp', '__amalgam__.py')) as f:
