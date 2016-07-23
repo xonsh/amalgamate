@@ -100,10 +100,7 @@ class GlobalNames(object):
             self.topnode = nodename
         meth = getattr(self, '_add_' + nodename, None)
         if meth is not None:
-            try:
-                meth(node)
-            except:
-                import pdb; pdb.set_trace()
+            meth(node)
 
     def _add_name(self, node):
         self.entry(node.id, node.lineno)
