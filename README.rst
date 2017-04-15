@@ -29,7 +29,7 @@ This has some funny side effects such as,
 
 1. All of the modules that are amalgamated share the same globals (so be
    careful about naming things),
-2. Debugging makes most things looks like code comes from ``__amalgam__``,
+2. Debugging makes most things look like code comes from ``__amalgam__``,
    unless an environment variable is set prior to import.
 3. Not all imports are able to be lazy.
 
