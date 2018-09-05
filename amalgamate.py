@@ -8,7 +8,7 @@ from collections import namedtuple
 from collections.abc import Mapping
 from ast import parse, walk, Import, ImportFrom
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 ModNode = namedtuple("ModNode", ["name", "pkgdeps", "extdeps", "futures"])
 ModNode.__doc__ = """Module node for dependency graph.
