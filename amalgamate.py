@@ -3,6 +3,7 @@
 import os
 import sys
 import pprint
+import importlib
 from itertools import repeat
 from collections import namedtuple
 from collections.abc import Mapping
@@ -255,6 +256,35 @@ def make_graph(pkg, exclude=None):
         graph[base] = make_node(base, pkg, allowed, glbnames)
     glbnames.warn_duplicates()
     return graph
+
+
+def graph_from_module(modpath, exclude=None):
+    """Return a deps graph and the pkg file path given a module path.
+    """
+    graph = {}
+    allowed = set()
+    mod = importlib.import_module(modpath)
+    modfile = mod.__file__
+    pkg = os.path.dirname(modfile)
+    if '__init__.py' in modfile:  # pkg mod
+        files = os.listdir(pkg)
+    else:  # single module
+        files = [os.path.basename(modfile)]
+
+    for fname in files:
+        base, ext = os.path.splitext(fname)
+        if base != '__init__' and (base.startswith('__') or ext != '.py'):
+            continue
+        allowed.add(base)
+
+    if exclude:
+        allowed -= exclude
+
+    glbnames = GlobalNames(pkg=pkg)
+    for base in allowed:
+        graph[base] = make_node(base, pkg, allowed, glbnames)
+    glbnames.warn_duplicates()
+    return graph, pkg
 
 
 def depsort(graph):
